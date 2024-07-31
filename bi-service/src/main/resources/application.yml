@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bi_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+
+server:
+  port: 8080
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  expiration: 86400000
+
+razorpay:
+  api:
+    key: ${RAZORPAY_API_KEY}
+    secret: ${RAZORPAY_API_SECRET}
