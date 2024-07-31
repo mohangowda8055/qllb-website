@@ -1,0 +1,51 @@
+services:
+  mysql:
+    container_name: mysql-bi-service
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: bi_db
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/database_dump.sql:/docker-entrypoint-initdb.d/data-dump.sql
+    ports:
+      - 3307:3306
+    networks:
+      - qllb-nw
+    restart: unless-stopped
+  bis-api:
+    container_name: bis-api
+    image: bis/bis:1.0.0
+    ports:
+      - 8080:8080
+    networks:
+      - qllb-nw
+    depends_on:
+      - mysql
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      RAZORPAY_API_KEY: ${RAZORPAY_API_KEY}
+      RAZORPAY_API_SECRET: ${RAZORPAY_API_SECRET}
+  qllb:
+    container_name: qllb
+    image: qllb/qllb:1.0.0
+    ports:
+      - 8088:80
+    networks:
+      - qllb-nw
+    depends_on:
+      - bis-api
+
+
+networks:
+  qllb-nw:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
