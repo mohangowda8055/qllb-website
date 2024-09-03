@@ -1,0 +1,13 @@
+services:
+  bis-api:
+    container_name: bis-api
+    image: mohangowda8055/bis:1.0.0
+    ports:
+      - 8080:8080
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      RAZORPAY_API_KEY: ${RAZORPAY_API_KEY}
+      RAZORPAY_API_SECRET: ${RAZORPAY_API_SECRET}
+
