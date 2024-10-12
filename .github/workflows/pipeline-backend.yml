@@ -120,16 +120,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-image]
     steps:
+      - name: Checkout code  # Ensure we have access to docker-compose.yml file
+        uses: actions/checkout@v4
+        with:
+        fetch-depth: 0
+
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Create deployment folder
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p ci-cd"
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "mkdir -p /home/ec2-user/ci-cd"
 
       - name: Copy docker-compose file
-        run: scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:ci-cd/docker-compose.yml
+        run: scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ec2-user/ci-cd/docker-compose.yml
 
       - name: Set ENV variable and deploy
         run: |
@@ -140,7 +145,7 @@ jobs:
           export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
           export RAZORPAY_API_KEY=${{ secrets.RAZORPAY_API_KEY }}
           export RAZORPAY_API_SECRET=${{ secrets.RAZORPAY_API_SECRET }}
-          cd ci-cd
+          cd /home/ec2-user/ci-cd
           docker compose pull -q
           docker compose up -d
           EOF
