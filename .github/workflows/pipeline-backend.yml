@@ -105,10 +105,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push to DockerHub
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with: 
-          context: bi-service
-          file: Dockerfile
+          context: ./bi-service
+          file: ./bi-service/Dockerfile
           push: true
           platforms: linux/amd64
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bis-api:${{ steps.extract_version.outputs.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/bis-api:latest
