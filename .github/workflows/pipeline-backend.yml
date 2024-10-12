@@ -48,7 +48,7 @@ jobs:
       - name: Running unit Tests
         run: |
           cd bi-service
-          ./mvnw clean compile 
+          ./mvnw clean test -Dspring.profiles.active=test 
 
   build:
     runs-on: ubuntu-latest

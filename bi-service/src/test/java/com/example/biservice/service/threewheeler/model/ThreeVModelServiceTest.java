@@ -29,7 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 class ThreeVModelServiceTest {
 
     @Mock
