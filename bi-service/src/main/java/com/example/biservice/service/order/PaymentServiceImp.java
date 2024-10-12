@@ -77,7 +77,7 @@ public class PaymentServiceImp implements PaymentService{
             checkout.put("theme",theme);
             options.put("checkout",checkout);
             paymentLinkRequest.put("options",options);
-            paymentLinkRequest.put("callback_url", "http://localhost:8088/payment/" + orderId);
+            paymentLinkRequest.put("callback_url", "https://dbkrdzjjbee2b.cloudfront.net/payment/" + orderId);
             paymentLinkRequest.put("callback_method","get");
 
             PaymentLink paymentLink = razorpayClient.paymentLink.create(paymentLinkRequest);

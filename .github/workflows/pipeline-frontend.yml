@@ -1,0 +1,45 @@
+name: QLLB Frontend API Pipeline
+
+on:
+  push:
+    branches:
+      - ci/cd-pipeline
+    paths:
+      - qllb/**
+      - 'docker-compose.yml'
+      - .github/workflows/*-frontend.yml
+
+jobs:
+  deploy:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      working-directory: qllb
+      run: npm ci
+
+    - name: Build the project
+      working-directory: qllb
+      run: npm run build
+
+    - name: Sync S3 Bucket
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl private --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'ap-south-1'
+        SOURCE_DIR: 'qllb/dist'
+        destination-dir: '/'
+        delete-removed: true
